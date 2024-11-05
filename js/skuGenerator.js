@@ -61,8 +61,8 @@ class SKUGenerator {
         } else {
             // thigh_length
             if (length >= 62 && length <= 71) return "Petite";
-            if (length >= 72 && length <= 83) return "Normal";
-            throw new Error("Thigh length measurement out of range (62-83cm)");
+            if (length >= 72 && length <= 95) return "Normal";  // Extended range
+            throw new Error("Thigh length measurement out of range (62-95cm)");
         }
     }
 
