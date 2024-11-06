@@ -1,5 +1,11 @@
 # Stocking SKU Generator
 
+## Software Stack
+- PHP 8.2
+- JavaScript (Vanilla)
+- Tailwind CSS (via CDN)
+- HTML5
+
 ## Overview
 The Stocking SKU Generator is a web-based tool designed to generate unique SKU (Stock Keeping Unit) codes for medical compression stockings based on specific measurements and product options. This tool ensures accurate sizing and product specification for medical compression stockings.
 
@@ -9,6 +15,24 @@ This tool helps healthcare providers and medical supply professionals to:
 - Generate accurate SKU codes for ordering
 - Validate measurements against established size ranges
 - Ensure proper product specification
+- Provide measurement guidance and fit confidence scores
+
+## Project Structure
+```
+/project-root
+    /dist
+        output.css
+    /fonts
+        PIRULEN.ttf
+    /images
+        scintera-logo.webp
+    /js
+        sizeLookup.js
+        skuGenerator.js
+        main.js
+    index.php
+    README.md
+```
 
 ## SKU Structure
 Each SKU is composed of several parts that encode specific product information:
@@ -46,35 +70,28 @@ Example SKU: XB69604
 ## Measurement Rules
 
 ### Length Types
+For Thigh Length:
 - **Petite**: Leg length 62-71 cm
-- **Normal**: Leg length 72-83 cm
+- **Normal**: Leg length 72-95 cm
+
+For Knee Length:
+- **Petite**: Leg length 20-38 cm
+- **Normal**: Leg length 39-50 cm
 
 ### Size Determination
 Sizes are determined by the following measurements:
 
-#### Size Ranges for Petite Length
+#### Size Ranges for Thigh Length
 | Size | Ankle (cm) | Calf (cm) | Thigh (cm) | Length (cm) | G Range (cm) |
 |------|------------|-----------|------------|-------------|--------------|
-| 1 | 17-19 | 27-32 | 42-47 | 62-71 | 48-56 |
-| 2 | 19-21 | 29-36 | 44-51 | 62-71 | 52-61 |
-| 3 | 21-23 | 32-39 | 48-55 | 62-71 | 56-66 |
-| 4 | 23-25 | 34-42 | 52-59 | 62-71 | 60-71 |
-| 5 | 25-27 | 36-45 | 55-63 | 62-71 | 64-76 |
-| 6 | 27-29 | 38-48 | 59-67 | 62-71 | 68-81 |
-| 7 | 29-31 | 40-50 | 63-70 | 62-71 | 71-83 |
-| 8 | 30-33 | 42-52 | 67-73 | 62-71 | 74-90 |
-
-#### Size Ranges for Normal Length
-| Size | Ankle (cm) | Calf (cm) | Thigh (cm) | Length (cm) | G Range (cm) |
-|------|------------|-----------|------------|-------------|--------------|
-| 1 | 17-19 | 27-32 | 42-47 | 72-83 | 48-56 |
-| 2 | 19-21 | 29-36 | 44-51 | 72-83 | 52-61 |
-| 3 | 21-23 | 32-39 | 48-55 | 72-83 | 56-66 |
-| 4 | 23-25 | 34-42 | 52-59 | 72-83 | 60-71 |
-| 5 | 25-27 | 36-45 | 55-63 | 72-83 | 64-76 |
-| 6 | 27-29 | 38-48 | 59-67 | 72-83 | 68-81 |
-| 7 | 29-31 | 40-50 | 63-70 | 72-83 | 71-83 |
-| 8 | 30-33 | 42-52 | 67-73 | 72-83 | 74-90 |
+| 1 | 17-19 | 27-32 | 42-47 | 72-95 | 48-56 |
+| 2 | 19-21 | 29-36 | 44-51 | 72-95 | 52-61 |
+| 3 | 21-23 | 32-39 | 48-55 | 72-95 | 56-66 |
+| 4 | 23-25 | 34-42 | 52-59 | 72-95 | 60-71 |
+| 5 | 25-27 | 36-45 | 55-63 | 72-95 | 64-76 |
+| 6 | 27-29 | 38-48 | 59-67 | 72-95 | 68-81 |
+| 7 | 29-31 | 40-50 | 63-70 | 72-95 | 71-83 |
+| 8 | 30-33 | 42-52 | 67-73 | 72-95 | 74-90 |
 
 ### G+ Determination
 For thigh-length stockings only:
@@ -99,100 +116,76 @@ The tool calculates a confidence score for the fit based on how well measurement
 ## Technical Implementation
 
 ### Core Components
-1. **SKU Generator Class**
+1. **SKU Generator Class (skuGenerator.js)**
    - Handles size determination
    - Calculates confidence scores
    - Generates SKU codes
 
-2. **Size Lookup Tables**
+2. **Size Lookup Tables (sizeLookup.js)**
    - Contains measurement ranges for each size
    - Separate tables for Petite and Normal lengths
 
-3. **Measurement Validation**
-   - Validates input measurements against acceptable ranges
-   - Provides feedback for out-of-range measurements
+3. **Interface Handler (main.js)**
+   - Manages user interactions
+   - Handles form validation
+   - Updates UI elements
+   - Manages tooltips and guidance
 
-### Key Functions
+4. **Styling**
+   - Uses Tailwind CSS for responsive design
+   - Custom PIRULEN font for branding
+   - Custom tooltips for measurement guidance
 
-#### determineInitialSize(ankle)
-Determines initial size based on ankle measurement:
-```javascript
-if (ankle >= 17 && ankle <= 19) return 1;
-if (ankle > 19 && ankle <= 21) return 2;
-// ... continues for sizes 3-8
-```
+### Installation
 
-#### determineLengthType(legLength)
-Determines if the stocking should be Petite or Normal length:
-```javascript
-if (legLength >= 62 && legLength <= 71) return "Petite";
-if (legLength >= 72 && legLength <= 83) return "Normal";
-```
+1. Server Requirements:
+   - PHP 8.2 or higher
+   - Web server (Apache/Nginx)
 
-#### determineStockingCode(length, legLengthType)
-Determines the style code based on length and type:
-```javascript
-if (length === "thigh_length") {
-    return (legLengthType === "Petite") ? "59" : "69";
-} else if (length === "knee_length") {
-    return (legLengthType === "Petite") ? "47" : "40";
-}
-```
+2. Setup:
+   ```bash
+   # Clone repository
+   git clone [repository-url]
 
-## Error Handling
-The system includes comprehensive error handling for:
-- Out-of-range measurements
-- Invalid input values
-- Missing required measurements
-- Incompatible measurement combinations
+   # Create required directories
+   mkdir -p fonts images js
 
-## User Interface
-- Clean, modern interface
-- Real-time validation
-- Clear measurement instructions
-- Visual confidence indicators
-- Tooltips for guidance
-- Copy functionality for SKU codes
-
-## Installation and Usage
-1. Include required JavaScript files:
-   ```html
-   <script src="./js/sizeLookup.js"></script>
-   <script src="./js/skuGenerator.js"></script>
-   <script src="./js/main.js"></script>
+   # Place required files
+   # - Put PIRULEN.ttf in /fonts
+   # - Put logo in /images
+   # - Place JavaScript files in /js
    ```
 
-2. Include Tailwind CSS for styling:
-   ```html
-   <script src="https://cdn.tailwindcss.com"></script>
-   ```
+3. Configuration:
+   - Ensure proper file permissions
+   - Configure web server to serve PHP files
+   - Verify paths in index.php match your setup
 
-3. Initialize the SKU Generator:
-   ```javascript
-   document.addEventListener('DOMContentLoaded', () => {
-       new SKUInterface();
-   });
-   ```
+## Browser Support
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## Maintenance
+Regular updates required for:
+- Measurement ranges
+- Size determination logic
+- Browser compatibility
+- Security patches
+- PHP version compatibility
 
 ## Testing Considerations
-- Validate measurement combinations
-- Check edge cases for size ranges
+- Validate all measurement combinations
+- Test edge cases for size ranges
 - Verify G+ determination logic
 - Test confidence score calculations
 - Confirm SKU generation accuracy
 - Verify error handling
-- Test cross-browser compatibility
+- Cross-browser compatibility testing
 
-## Maintenance and Updates
-- Regular validation of size ranges
-- Updates to confidence calculation logic
-- UI/UX improvements
-- Browser compatibility updates
-- Performance optimizations
-
-## Support and Documentation
-For additional support or documentation:
-- Check measurement guidelines
-- Verify size ranges
-- Consult compression stocking specifications
-- Review fitting guidelines# stocking-sku-generator
+## Support
+For technical support or feature requests:
+- Open an issue in the repository
+- Contact development team
+- Refer to documentation
