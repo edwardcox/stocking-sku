@@ -1,0 +1,20 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Custom styles */
+@layer base {
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+}
+
+@layer components {
+    .tippy-box[data-theme~='custom'] {
+        @apply bg-gray-800 text-white rounded-lg text-base p-2;
+    }
+
+    .tippy-box[data-theme~='custom'][data-placement^='top'] > .tippy-arrow::before {
+        border-top-color: #1f2937;
+    }
+}
